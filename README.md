@@ -19,4 +19,4 @@ A current student at Loyola Marymount University located in Los Angeles, Califor
 
 ## Where to Play
 
-You can play centurion [here](www.centurionapp.herokuapp.com)!
+You can play centurion [here](https://centurionapp.herokuapp.com/)!
