@@ -1,0 +1,29 @@
+.header-container {
+  text-align: center;
+  font-family: avenir;
+}
+
+.header {
+  background-color: #65272c;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.header-title {
+  margin-top: 35px;
+  font-size: 24px;
+}
+
+.game-header-title {
+  margin-top: 15px;
+  font-size: 24px;
+}
+
+.header-title-description {
+  font-size: 16px;
+}
+
+progress {
+  width: 3px;
+}
