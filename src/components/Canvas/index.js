@@ -1,27 +1,42 @@
 import React, { Component } from 'react';
+import Header from '../Header';
+import Footer from "../Footer";
 import { enemies, players, mouse } from '../../client';
 import GameOverView from '../../containers/GameOverView';
-import HeadingBanner from '../HeadingBanner';
 import './styles.css';
 
 let canvas = null;
 let ctx = null;
-let progress = 0;
+let health = 100;
 let scoreInterval = null;
 
 const rect = (props) =>  {
-    const { ctx, x, y, width, height } = props;
-    ctx.fillStyle = 'linear-gradient(to right, red, yellow)';
-    ctx.fillRect(x, y, width, height);
-}
+  const { ctx, x, y, width, height } = props;
+  ctx.fillStyle = '#37C612';
+  ctx.fillRect(x, y, width, height);
+};
+
+function pushOff(c1, c2) {
+  let [dx, dy] = [c2.x - c1.x, c2.y - c1.y];
+  const L = Math.hypot(dx, dy);
+  let distToMove = c1.radius + c2.radius - L;
+  if (distToMove > 0) {
+    dx /= L;
+    dy /= L;
+    c1.x -= dx * distToMove / 2;
+    c1.y -= dy * distToMove / 2;
+    c2.x += dx * distToMove / 2;
+    c2.y += dy * distToMove / 2;
+  }
+};
 
 const distanceBetween = (sprite1, sprite2) => {
   return Math.hypot(sprite1.x - sprite2.x, sprite1.y - sprite2.y);
-}
+};
 
 const haveCollided = (sprite1, sprite2) => {
   return distanceBetween(sprite1, sprite2) < (sprite1.radius + sprite2.radius);
-}
+};
 
 const updateMouse = (event) => {
   const { left, top } = canvas.getBoundingClientRect();
@@ -29,28 +44,33 @@ const updateMouse = (event) => {
     mouse.x = event.clientX - left;
     mouse.y = event.clientY - top;
   }
-}
+};
 
 const moveToward = (leader, follower, speed) => {
   follower.x += (leader.x - follower.x) * speed;
   follower.y += (leader.y - follower.y) * speed;
-}
+};
 
 const clearBackground = () => {
   rect({ ctx, x: 0, y: 0, width: canvas.width, height: canvas.height });
-}
+};
 
 const updateScene = () => {
   players.forEach(player => moveToward(mouse, player, player.speed));
   players.forEach(player => {
     enemies.forEach(enemy => moveToward(player, enemy, enemy.speed));
   });
+  for (let i = 0; i < enemies.length; i++) {
+    for (let j = i+1; j < enemies.length; j++) {
+      pushOff(enemies[i], enemies[j]);
+    }
+  }
   enemies.forEach(enemy => {
     if (haveCollided(enemy, players[0])) {
-      progress.value -= 1;
+      health.value -= 1;
     }
   });
-}
+};
 
 const drawScene = () => {
   clearBackground();
@@ -61,13 +81,14 @@ const drawScene = () => {
 };
 
 const playerIsDead = () => {
-  if (progress.value <= 0) {
+  if (health.value <= 0) {
     clearInterval(scoreInterval);
+    window.cancelAnimationFrame(drawScene);
     return true;
   } else {
     return false;
   }
-}
+};
 
 export default class Canvas extends Component {
     constructor(props){
@@ -79,7 +100,7 @@ export default class Canvas extends Component {
     componentDidMount() {
       canvas = this.refs.canvas;
       ctx = canvas.getContext('2d');
-      progress = this.refs.progress;
+      health = this.refs.progress;
 
       window.addEventListener('mousemove', updateMouse);
 
@@ -95,21 +116,22 @@ export default class Canvas extends Component {
           return (
             <GameOverView
               username={this.props.username}
-              score={this.state.timeOfSurvival}
+              timeOfSurvival={this.state.timeOfSurvival}
             />
           );
         } else {
           return (
             <div>
-              <HeadingBanner
+              <Header
                 username={this.props.username}
                 loggedIn={this.props.loggedIn}
               />
               <div className="game-board">
                 <h1>Survive!</h1>
                 <p><progress ref="progress" max={100} value={100} /></p>
-                <canvas ref="canvas" width={400} height={400} />
+                <canvas ref="canvas" width={700} height={600} />
               </div>
+              <Footer />
             </div>
           );
         }

@@ -1,92 +1,90 @@
-import React, { Component } from 'react';
-import HeadingBanner from '../../components/HeadingBanner';
-import Canvas from '../../components/Canvas';
-
-import './styles.css';
+import React, { Component } from "react";
+import Header from "../../components/Header";
+import Canvas from "../../components/Canvas";
+import Footer from "../../components/Footer";
+import "./styles.css";
 
 class GameView extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.submitUsernameValue = this.submitUsernameValue.bind(this);
+    this.updateUsernameValue = this.updateUsernameValue.bind(this);
 
     this.state = {
-      username: '',
-      error: '',
+      username: "",
+      error: "",
       displayError: false,
-      loggedIn: false,
-      displaySuccess: false,
+      loggedIn: false
     };
   }
 
-  handleSubmit(event) {
+  submitUsernameValue(event) {
     const { username } = this.state;
 
     if (
-        typeof username === 'string'
-        && isNaN(username)
-        && username.length > 4
-        && username.length < 16
-       ) {
-        this.setState({ loggedIn: true });
+      typeof username === "string" &&
+      isNaN(username) &&
+      username.length > 4 &&
+      username.length < 16
+    ) {
+      this.setState({ loggedIn: true });
     } else {
-        this.setState({
-          error: 'That username does not meet the requirements!',
-          displayError: true
-        });
+      this.setState({
+        error: "That username does not meet the requirements! Try again.",
+        displayError: true
+      });
     }
     event.preventDefault();
   }
 
-  handleChange(event) {
+  updateUsernameValue(event) {
     this.setState({ username: event.target.value });
   }
 
   showLoginForm() {
     return (
       <div>
-        <HeadingBanner
+        <Header
           username={this.state.username}
           loggedIn={this.state.loggedIn}
         />
         <div className="login-container">
-          <div className="login">
-            <h1 className="enter-username-title">Enter your Username below!</h1>
-            <p className="enter-username-title-description">
-              Your username must be a string with 5-15 characters!
-            </p>
+          <div>
             <div className="login-form">
-              <form onSubmit={this.handleSubmit}>
-                <label className="username-title">
-                  Username:
-                  <input type="text" value={this.state.username} onChange={this.handleChange} />
-                </label>
-                <input type='submit' value="Play!" className="submit-button" />
+              <form onSubmit={this.submitUsernameValue}>
+                <h1 className="username-title">Username</h1>
+                <p className="enter-username-title-description">
+                  Your username must be a string with 5-15 characters!
+                </p>
+                <input
+                  type="text"
+                  value={this.state.username}
+                  onChange={this.updateUsernameValue}
+                />
+                <br/>
+                <input type="submit" value="Play!" className="button submit-button" />
               </form>
             </div>
           </div>
-          { this.state.displayError && this.state.error }
-          { this.state.displaySuccess && <h1 className="success-message">Success!</h1> }
+          {this.state.displayError && this.state.error}
         </div>
+        <Footer />
       </div>
     );
   }
 
   startGame() {
     return (
-      <Canvas
-        username={this.state.username}
-        loggedIn={this.state.loggedIn}
-      />
+      <Canvas username={this.state.username} loggedIn={this.state.loggedIn} />
     );
   }
 
   render() {
     return (
       <div>
-          { !this.state.loggedIn && this.showLoginForm() }
-          { this.state.loggedIn && this.startGame() }
+        {!this.state.loggedIn && this.showLoginForm()}
+        {this.state.loggedIn && this.startGame()}
       </div>
     );
   }

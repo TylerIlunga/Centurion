@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './styles.css';
 
-export default class HeadingBanner extends Component {
+export default class Header extends Component {
   constructor(props) {
     super(props);
 
-    this.interval;
+    this.survivalTimeInterval;
 
     this.state = {
       level: 1,
@@ -14,17 +14,17 @@ export default class HeadingBanner extends Component {
   }
 
   componentDidMount() {
-    this.countdown();
+    this.levelCountdown();
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    clearInterval(this.survivalTimeInterval);
   }
 
-  countdown() {
+  levelCountdown() {
     const { username, loggedIn } = this.props;
     if (username && loggedIn) {
-      this.interval = setInterval(() => {
+      this.survivalTimeInterval = setInterval(() => {
         if (this.state.timeRemaining > 0) {
           this.setState({ timeRemaining: this.state.timeRemaining - 1 });
         } else {
@@ -42,7 +42,7 @@ export default class HeadingBanner extends Component {
     if (username && loggedIn) {
       return (
         <div className="header-container">
-          <header className="header">
+          <header className="game-header">
             <h1 className="game-header-title">
               Centurion {username ? username : 'Centurion'}
             </h1>

@@ -1,14 +1,13 @@
 .game-board {
   text-align: center;
   margin: 0 auto;
-  width: 400px;
+  width: 700px;
 }
 
 progress {
-  width: 400px;
+  width: 700px;
 }
 
 canvas {
-  border: 1px solid #65272c;
-  background: linear-gradient(to right, red, yellow);
+  border: 1px solid #37C612;
 }

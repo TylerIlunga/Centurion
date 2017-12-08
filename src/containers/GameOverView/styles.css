@@ -1,3 +1,26 @@
 .game-over-container {
-  text-align: center; 
+  text-align: center;
+}
+
+.player-status-title {
+  margin-top: 50px;
+}
+
+.survival-title {
+  padding-bottom: 10px;
+}
+
+.button {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.replay-button {
+  background-color: #DB1360; /* Green */
 }
