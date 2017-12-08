@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { enemies, players, mouse } from '../../client';
+import GameOverView from '../../containers/GameOverView';
+import HeadingBanner from '../HeadingBanner';
 import './styles.css';
 
-let ctx = null;
 let canvas = null;
-let progress = null;
+let ctx = null;
+let progress = 0;
+let scoreInterval = null;
 
 const rect = (props) =>  {
     const { ctx, x, y, width, height } = props;
@@ -54,32 +57,61 @@ const drawScene = () => {
   players.forEach(player => player.draw(canvas.getContext('2d')));
   enemies.forEach(enemy => enemy.draw(canvas.getContext('2d')));
   updateScene();
-  if (progress.value <= 0) {
-    alert('Game Over!');
-    return;
-  }
   window.requestAnimationFrame(drawScene);
 };
 
+const playerIsDead = () => {
+  if (progress.value <= 0) {
+    clearInterval(scoreInterval);
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export default class Canvas extends Component {
-    constructor(){
-      super();
-      this.state = { spaceBarPressed: false };
+    constructor(props){
+      super(props);
+
+      this.state = { timeOfSurvival: 0 };
     }
+
     componentDidMount() {
       canvas = this.refs.canvas;
       ctx = canvas.getContext('2d');
       progress = this.refs.progress;
+
       window.addEventListener('mousemove', updateMouse);
+
+      scoreInterval = setInterval(() => {
+        this.setState({ timeOfSurvival: this.state.timeOfSurvival + 1 });
+      }, 1000)
+
       drawScene();
     }
 
     render() {
-        return (
+        if (playerIsDead()) {
+          return (
+            <GameOverView
+              username={this.props.username}
+              score={this.state.timeOfSurvival}
+            />
+          );
+        } else {
+          return (
             <div>
-              <p><progress ref="progress" max={100} value={100} /></p>
-              <canvas ref="canvas" width={400} height={400} />
+              <HeadingBanner
+                username={this.props.username}
+                loggedIn={this.props.loggedIn}
+              />
+              <div className="game-board">
+                <h1>Survive!</h1>
+                <p><progress ref="progress" max={100} value={100} /></p>
+                <canvas ref="canvas" width={400} height={400} />
+              </div>
             </div>
-        );
+          );
+        }
     }
 }

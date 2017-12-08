@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import HeadingBanner from '../HeadingBanner';
+import HeadingBanner from '../../components/HeadingBanner';
 import Canvas from '../../components/Canvas';
 
 import './styles.css';
@@ -45,44 +45,46 @@ class GameView extends Component {
 
   showLoginForm() {
     return (
-      <div className="login-container">
-        <div className="login">
-          <h1 className="enter-username-title">Enter your Username below!</h1>
-          <p className="enter-username-title-description">
-            Your username must be a string with 5-15 characters!
-          </p>
-          <div className="login-form">
-            <form onSubmit={this.handleSubmit}>
-              <label className="username-title">
-                Username:
-                <input type="text" value={this.state.username} onChange={this.handleChange} />
-              </label>
-              <input type='submit' value="Play!" className="submit-button" />
-            </form>
+      <div>
+        <HeadingBanner
+          username={this.state.username}
+          loggedIn={this.state.loggedIn}
+        />
+        <div className="login-container">
+          <div className="login">
+            <h1 className="enter-username-title">Enter your Username below!</h1>
+            <p className="enter-username-title-description">
+              Your username must be a string with 5-15 characters!
+            </p>
+            <div className="login-form">
+              <form onSubmit={this.handleSubmit}>
+                <label className="username-title">
+                  Username:
+                  <input type="text" value={this.state.username} onChange={this.handleChange} />
+                </label>
+                <input type='submit' value="Play!" className="submit-button" />
+              </form>
+            </div>
           </div>
+          { this.state.displayError && this.state.error }
+          { this.state.displaySuccess && <h1 className="success-message">Success!</h1> }
         </div>
-        { this.state.displayError && this.state.error }
-        { this.state.displaySuccess && <h1 className="success-message">Success!</h1> }
       </div>
     );
   }
 
   startGame() {
     return (
-      <div className="game-board">
-        <h1>Survive!</h1>
-        <Canvas />
-      </div>
+      <Canvas
+        username={this.state.username}
+        loggedIn={this.state.loggedIn}
+      />
     );
   }
 
   render() {
     return (
       <div>
-        <HeadingBanner
-          username={this.state.username}
-          loggedIn={this.state.loggedIn}
-        />
           { !this.state.loggedIn && this.showLoginForm() }
           { this.state.loggedIn && this.startGame() }
       </div>
